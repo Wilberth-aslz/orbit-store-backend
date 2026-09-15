@@ -1,0 +1,377 @@
+{
+  "info": {
+    "name": "ORBIT Store API",
+    "description": "Coleccion de Postman para el reto de periodo de prueba - Desarrollo de Software (Turing Inteligencia Artificial). Cubre auth, categorias, productos, favoritos y usuarios.\n\nFlujo sugerido:\n1. Auth > Login (Admin) -- guarda el token automaticamente en {{adminToken}}\n2. Auth > Login (User) -- guarda el token automaticamente en {{userToken}}\n3. Corre el resto de las carpetas en orden.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_postman_id": "orbit-store-api-collection"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:4000/api" },
+    { "key": "adminToken", "value": "" },
+    { "key": "userToken", "value": "" },
+    { "key": "createdProductId", "value": "" },
+    { "key": "createdCategoryId", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "Healthcheck",
+          "event": [
+            {
+              "listen": "test",
+              "script": { "exec": ["pm.test('200 OK', () => pm.response.to.have.status(200));"] }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/health"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Registro (nuevo usuario)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/auth/register",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Usuario Postman\",\n  \"email\": \"postman-{{$timestamp}}@orbit.com\",\n  \"password\": \"Postman123!\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Login (Admin)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "(function () {",
+                  "  const data = pm.response.json();",
+                  "  if (data.success) { pm.collectionVariables.set('adminToken', data.data.token); }",
+                  "  pm.test('Login admin exitoso', () => pm.response.to.have.status(200));",
+                  "})();"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/auth/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@orbit.com\",\n  \"password\": \"Admin123!\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Login (User)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "(function () {",
+                  "  const data = pm.response.json();",
+                  "  if (data.success) { pm.collectionVariables.set('userToken', data.data.token); }",
+                  "  pm.test('Login user exitoso', () => pm.response.to.have.status(200));",
+                  "})();"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/auth/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@orbit.com\",\n  \"password\": \"User123!\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Perfil actual (/me)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{userToken}}" }],
+            "url": "{{baseUrl}}/auth/me"
+          }
+        },
+        {
+          "name": "Login con password incorrecto (debe fallar 401)",
+          "event": [
+            {
+              "listen": "test",
+              "script": { "exec": ["pm.test('401 Unauthorized', () => pm.response.to.have.status(401));"] }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/auth/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@orbit.com\",\n  \"password\": \"incorrecta\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Categorias",
+      "item": [
+        {
+          "name": "Listar categorias",
+          "request": { "method": "GET", "url": "{{baseUrl}}/categories" }
+        },
+        {
+          "name": "Crear categoria (ADMIN)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "(function () {",
+                  "  const data = pm.response.json();",
+                  "  if (data.success) { pm.collectionVariables.set('createdCategoryId', data.data.id); }",
+                  "})();"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "url": "{{baseUrl}}/categories",
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Categoria de prueba\"\n}" }
+          }
+        },
+        {
+          "name": "Actualizar categoria (ADMIN)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "url": "{{baseUrl}}/categories/{{createdCategoryId}}",
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Categoria de prueba (editada)\"\n}" }
+          }
+        },
+        {
+          "name": "Crear categoria SIN token (debe fallar 401)",
+          "event": [
+            {
+              "listen": "test",
+              "script": { "exec": ["pm.test('401 Unauthorized', () => pm.response.to.have.status(401));"] }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/categories",
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"No deberia crearse\"\n}" }
+          }
+        },
+        {
+          "name": "Eliminar categoria de prueba (ADMIN)",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": "{{baseUrl}}/categories/{{createdCategoryId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Productos",
+      "item": [
+        {
+          "name": "Listar productos (paginado)",
+          "request": { "method": "GET", "url": "{{baseUrl}}/products?page=1&limit=6" }
+        },
+        {
+          "name": "Listar productos por categoria",
+          "request": { "method": "GET", "url": "{{baseUrl}}/products?category=electronica" }
+        },
+        {
+          "name": "Buscar productos",
+          "request": { "method": "GET", "url": "{{baseUrl}}/products?search=audifonos" }
+        },
+        {
+          "name": "Detalle de producto",
+          "request": { "method": "GET", "url": "{{baseUrl}}/products/1" }
+        },
+        {
+          "name": "Crear producto (ADMIN)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "(function () {",
+                  "  const data = pm.response.json();",
+                  "  if (data.success) { pm.collectionVariables.set('createdProductId', data.data.id); }",
+                  "  pm.test('Producto creado (201)', () => pm.response.to.have.status(201));",
+                  "})();"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "url": "{{baseUrl}}/products",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Producto de prueba Postman\",\n  \"description\": \"Creado desde la coleccion de Postman\",\n  \"price\": 199.99,\n  \"stock\": 10,\n  \"imageUrl\": \"https://picsum.photos/seed/postman/400\",\n  \"categoryId\": 1\n}"
+            }
+          }
+        },
+        {
+          "name": "Actualizar producto -- parcial (ADMIN)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "url": "{{baseUrl}}/products/{{createdProductId}}",
+            "body": { "mode": "raw", "raw": "{\n  \"price\": 249.99\n}" }
+          }
+        },
+        {
+          "name": "Crear producto con datos invalidos (debe fallar 400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": { "exec": ["pm.test('400 Bad Request', () => pm.response.to.have.status(400));"] }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "url": "{{baseUrl}}/products",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"X\",\n  \"description\": \"corta\",\n  \"price\": -5,\n  \"stock\": 1,\n  \"imageUrl\": \"no-es-url\",\n  \"categoryId\": 1\n}"
+            }
+          }
+        },
+        {
+          "name": "Crear producto como USER (debe fallar 403)",
+          "event": [
+            {
+              "listen": "test",
+              "script": { "exec": ["pm.test('403 Forbidden', () => pm.response.to.have.status(403));"] }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{userToken}}" }
+            ],
+            "url": "{{baseUrl}}/products",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"No deberia crearse\",\n  \"description\": \"Usuario sin permisos\",\n  \"price\": 10,\n  \"stock\": 1,\n  \"imageUrl\": \"https://picsum.photos/seed/x/400\",\n  \"categoryId\": 1\n}"
+            }
+          }
+        },
+        {
+          "name": "Eliminar producto de prueba (ADMIN)",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": "{{baseUrl}}/products/{{createdProductId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Favoritos",
+      "item": [
+        {
+          "name": "Agregar producto 1 a favoritos (USER)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{userToken}}" }],
+            "url": "{{baseUrl}}/favorites/1"
+          }
+        },
+        {
+          "name": "Listar mis favoritos (USER)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{userToken}}" }],
+            "url": "{{baseUrl}}/favorites"
+          }
+        },
+        {
+          "name": "Quitar producto 1 de favoritos (USER)",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{userToken}}" }],
+            "url": "{{baseUrl}}/favorites/1"
+          }
+        },
+        {
+          "name": "Ver favoritos SIN token (debe fallar 401)",
+          "event": [
+            {
+              "listen": "test",
+              "script": { "exec": ["pm.test('401 Unauthorized', () => pm.response.to.have.status(401));"] }
+            }
+          ],
+          "request": { "method": "GET", "url": "{{baseUrl}}/favorites" }
+        }
+      ]
+    },
+    {
+      "name": "Usuarios",
+      "item": [
+        {
+          "name": "Listar usuarios (ADMIN)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": "{{baseUrl}}/users"
+          }
+        },
+        {
+          "name": "Listar usuarios como USER (debe fallar 403)",
+          "event": [
+            {
+              "listen": "test",
+              "script": { "exec": ["pm.test('403 Forbidden', () => pm.response.to.have.status(403));"] }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{userToken}}" }],
+            "url": "{{baseUrl}}/users"
+          }
+        }
+      ]
+    }
+  ]
+}

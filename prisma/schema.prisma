@@ -1,0 +1,82 @@
+// Esquema de base de datos - ORBIT Store (reto periodo de prueba Turing-IA)
+//
+// Motor por defecto: SQLite (cero configuracion, corre local sin instalar nada).
+// Para usar PostgreSQL en su lugar, solo hay que cambiar:
+//   provider = "postgresql"
+//   DATABASE_URL="postgresql://usuario:password@host:5432/basededatos"
+// en el archivo .env, y volver a correr `npm run prisma:migrate`.
+// El resto del esquema es compatible con ambos motores.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  USER
+}
+
+/// Usuarios del sistema. Un usuario puede tener rol ADMIN (gestiona catalogo)
+/// o USER (navega y guarda favoritos).
+model User {
+  id        Int        @id @default(autoincrement())
+  name      String
+  email     String     @unique
+  password  String
+  role      Role       @default(USER)
+  favorites Favorite[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  @@map("users")
+}
+
+/// Categorias del catalogo propio (normalizadas fuera de Product para evitar
+/// redundancia de strings repetidos por producto -> cumple 3FN).
+model Category {
+  id        Int       @id @default(autoincrement())
+  name      String    @unique
+  slug      String    @unique
+  products  Product[]
+  createdAt DateTime  @default(now())
+
+  @@map("categories")
+}
+
+/// Productos del catalogo propio de la tienda (CRUD administrado por ADMIN,
+/// lectura publica para el frontend).
+model Product {
+  id          Int        @id @default(autoincrement())
+  name        String     @unique
+  description String
+  price       Float
+  stock       Int        @default(0)
+  imageUrl    String
+  categoryId  Int
+  category    Category   @relation(fields: [categoryId], references: [id])
+  favorites   Favorite[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@map("products")
+}
+
+/// Tabla intermedia (relacion muchos-a-muchos) entre User y Product para la
+/// funcionalidad de favoritos. Se evita duplicar el mismo favorito con
+/// una restriccion unique compuesta.
+model Favorite {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  productId Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, productId])
+  @@map("favorites")
+}

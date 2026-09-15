@@ -6,3 +6,4 @@ prisma/dev.db-journal
 *.log
 
 prisma/*.js
+coverage/

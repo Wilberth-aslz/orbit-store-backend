@@ -370,6 +370,94 @@
             "header": [{ "key": "Authorization", "value": "Bearer {{userToken}}" }],
             "url": "{{baseUrl}}/users"
           }
+        },
+        {
+          "name": "Ascender usuario demo a ADMIN",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "(function () {",
+                  "  const data = pm.response.json();",
+                  "  pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "  pm.test('rol actualizado a ADMIN', () => pm.expect(data.data.role).to.eql('ADMIN'));",
+                  "})();"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "url": "{{baseUrl}}/users/2/role",
+            "body": { "mode": "raw", "raw": "{\n  \"role\": \"ADMIN\"\n}" }
+          }
+        },
+        {
+          "name": "Admin intenta cambiar su propio rol (debe fallar 400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": { "exec": ["pm.test('400 Bad Request', () => pm.response.to.have.status(400));"] }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "url": "{{baseUrl}}/users/1/role",
+            "body": { "mode": "raw", "raw": "{\n  \"role\": \"USER\"\n}" }
+          }
+        },
+        {
+          "name": "Revertir usuario demo a USER",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "(function () {",
+                  "  const data = pm.response.json();",
+                  "  pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "  pm.test('rol revertido a USER', () => pm.expect(data.data.role).to.eql('USER'));",
+                  "})();"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "url": "{{baseUrl}}/users/2/role",
+            "body": { "mode": "raw", "raw": "{\n  \"role\": \"USER\"\n}" }
+          }
+        },
+        {
+          "name": "USER intenta ascenderse a si mismo (debe fallar 403)",
+          "event": [
+            {
+              "listen": "test",
+              "script": { "exec": ["pm.test('403 Forbidden', () => pm.response.to.have.status(403));"] }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{userToken}}" }
+            ],
+            "url": "{{baseUrl}}/users/2/role",
+            "body": { "mode": "raw", "raw": "{\n  \"role\": \"ADMIN\"\n}" }
+          }
         }
       ]
     },

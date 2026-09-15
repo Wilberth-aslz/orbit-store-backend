@@ -7,3 +7,9 @@ prisma/dev.db-journal
 
 prisma/*.js
 coverage/
+
+.vercel
+.env*
+.agents/
+.claude/
+skills-lock.json

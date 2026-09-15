@@ -1,19 +1,18 @@
 // Esquema de base de datos - ORBIT Store (reto periodo de prueba Turing-IA)
 //
-// Motor por defecto: SQLite (cero configuracion, corre local sin instalar nada).
-// Para usar PostgreSQL en su lugar, solo hay que cambiar:
-//   provider = "postgresql"
-//   DATABASE_URL="postgresql://usuario:password@host:5432/basededatos"
-// en el archivo .env, y volver a correr `npm run prisma:migrate`.
-// El resto del esquema es compatible con ambos motores.
+// Motor: PostgreSQL, provisionado con Neon (via integracion de Vercel
+// Marketplace) para que la base sea la misma en local y en produccion.
+// `url` usa la conexion "pooled" (pgbouncer, para runtime normal) y
+// `directUrl` la conexion directa (requerida por las migraciones).
 
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DATABASE_URL_UNPOOLED")
 }
 
 enum Role {

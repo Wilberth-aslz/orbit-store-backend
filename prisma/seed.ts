@@ -11,27 +11,47 @@ const CATEGORIES = [
   { name: "Deportes", slug: "deportes" },
 ];
 
-// Fotos reales de cada producto (Wikimedia Commons, licencia libre), elegidas
-// para que coincidan con lo que describe el nombre -- no son placeholders
-// genericos aleatorios.
+// Fotos reales de cada producto, todas de la misma fuente de catalogo de
+// e-commerce (cdn.dummyjson.com) que usa la seccion "Tendencias" (FakeStore
+// API) -- mismo estilo de estudio, fondo blanco, HD. Donde el nombre
+// original (ej. "Teclado mecanico") no tenia una foto real disponible en esa
+// fuente, se cambio el producto por otro del mismo tipo de tienda que si la
+// tiene, en vez de forzar una foto que no correspondiera.
 const PRODUCTS: Array<{ name: string; description: string; price: number; stock: number; imageUrl: string; category: string }> = [
   { name: "Audifonos inalambricos ORBIT Pulse", description: "Audifonos bluetooth con cancelacion de ruido activa y 30h de bateria.", price: 899, stock: 25, imageUrl: "https://cdn.dummyjson.com/product-images/mobile-accessories/apple-airpods-max-silver/1.webp", category: "electronica" },
   { name: "Smartwatch ORBIT Fit", description: "Reloj inteligente con monitor de ritmo cardiaco, GPS y resistencia al agua.", price: 1499, stock: 15, imageUrl: "https://cdn.dummyjson.com/product-images/mobile-accessories/apple-watch-series-4-gold/1.webp", category: "electronica" },
-  { name: "Teclado mecanico ORBIT Type", description: "Teclado mecanico retroiluminado RGB, switches rojos, layout espanol.", price: 1099, stock: 20, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/d/df/Mechanical_keyboard_example.jpg", category: "electronica" },
-  { name: "Mouse ergonomico ORBIT Grip", description: "Mouse inalambrico ergonomico de alta precision, 6 botones programables.", price: 549, stock: 40, imageUrl: "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/77/A_wireless_computer_mouse.jpg/960px-A_wireless_computer_mouse.jpg", category: "electronica" },
-  { name: "Bocina portatil ORBIT Boom", description: "Bocina bluetooth resistente al agua IPX7 con 12h de autonomia.", price: 799, stock: 18, imageUrl: "https://cdn.dummyjson.com/product-images/mobile-accessories/apple-homepod-mini-cosmic-grey/1.webp", category: "electronica" },
-  { name: "Chamarra impermeable ORBIT Storm", description: "Chamarra ligera impermeable, ideal para lluvia y viento.", price: 1299, stock: 12, imageUrl: "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9d/Windbreaker_Jacket%2C_Hood_Outside_Transparency.png/960px-Windbreaker_Jacket%2C_Hood_Outside_Transparency.png", category: "ropa" },
-  { name: "Playera basica ORBIT Core", description: "Playera de algodon premium, corte regular, varios colores.", price: 299, stock: 60, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/0/0c/Crew_neck_T-shirt.jpg", category: "ropa" },
-  { name: "Sudadera ORBIT Comfort", description: "Sudadera con capucha, interior afelpado, ideal para clima frio.", price: 699, stock: 30, imageUrl: "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/53/WP_hoodie_FRONTcBack_Merchandise_shots-36.jpg/960px-WP_hoodie_FRONTcBack_Merchandise_shots-36.jpg", category: "ropa" },
-  { name: "Gorra ORBIT Street", description: "Gorra ajustable con bordado ORBIT, estilo urbano.", price: 349, stock: 45, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/e/eb/Baseball_cap.jpg", category: "ropa" },
+  { name: "Laptop ORBIT Power", description: "Laptop ultradelgada, pantalla dual, ideal para trabajo y creatividad.", price: 24999, stock: 8, imageUrl: "https://cdn.dummyjson.com/product-images/laptops/asus-zenbook-pro-dual-screen-laptop/1.webp", category: "electronica" },
+  { name: "Cargador portatil ORBIT Charge", description: "Power bank inalambrico magnetico, carga rapida, compatible con la mayoria de celulares.", price: 649, stock: 40, imageUrl: "https://cdn.dummyjson.com/product-images/mobile-accessories/apple-magsafe-battery-pack/1.webp", category: "electronica" },
+  { name: "Bocina portatil ORBIT Boom", description: "Bocina inteligente con excelente calidad de sonido, control por voz.", price: 799, stock: 18, imageUrl: "https://cdn.dummyjson.com/product-images/mobile-accessories/apple-homepod-mini-cosmic-grey/1.webp", category: "electronica" },
+  { name: "Camisa a cuadros ORBIT Flannel", description: "Camisa de manga larga a cuadros, algodon suave, corte regular.", price: 549, stock: 30, imageUrl: "https://cdn.dummyjson.com/product-images/mens-shirts/man-plaid-shirt/1.webp", category: "ropa" },
+  { name: "Playera basica ORBIT Core", description: "Playera de algodon premium, manga corta, corte regular.", price: 299, stock: 60, imageUrl: "https://cdn.dummyjson.com/product-images/mens-shirts/man-short-sleeve-shirt/1.webp", category: "ropa" },
+  { name: "Camisa casual ORBIT Weekend", description: "Camisa a cuadros de manga larga, ideal para uso diario o casual.", price: 599, stock: 25, imageUrl: "https://cdn.dummyjson.com/product-images/mens-shirts/men-check-shirt/1.webp", category: "ropa" },
+  { name: "Vestido casual ORBIT Grace", description: "Vestido casual de corte sencillo, comodo para el dia a dia.", price: 749, stock: 20, imageUrl: "https://cdn.dummyjson.com/product-images/tops/gray-dress/1.webp", category: "ropa" },
   { name: "Lampara de escritorio ORBIT Glow", description: "Lampara de mesa decorativa, pantalla de tela y base con acabado artesanal.", price: 459, stock: 22, imageUrl: "https://cdn.dummyjson.com/product-images/home-decoration/table-lamp/1.webp", category: "hogar" },
-  { name: "Set de sabanas ORBIT Sleep", description: "Juego de sabanas matrimoniales 400 hilos, tela suave hipoalergenica.", price: 999, stock: 16, imageUrl: "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ed/Prze%C5%9Bcierad%C5%82o.jpg/960px-Prze%C5%9Bcierad%C5%82o.jpg", category: "hogar" },
-  { name: "Organizador modular ORBIT Space", description: "Set de 3 organizadores apilables para closet o cocina.", price: 389, stock: 28, imageUrl: "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e2/Tupperware_Ultraplus.JPG/960px-Tupperware_Ultraplus.JPG", category: "hogar" },
-  { name: "Difusor aromatico ORBIT Calm", description: "Difusor de ceramica con vela, para aceites esenciales, diseno minimalista.", price: 599, stock: 20, imageUrl: "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/cf/Candle_Diffuser.jpg/960px-Candle_Diffuser.jpg", category: "hogar" },
-  { name: "Tapete de yoga ORBIT Flex", description: "Tapete antiderrapante de 6mm, incluye correa de transporte.", price: 449, stock: 35, imageUrl: "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6d/Yoga_mat.jpg/960px-Yoga_mat.jpg", category: "deportes" },
-  { name: "Mancuernas ajustables ORBIT Power", description: "Par de mancuernas ajustables de 2 a 10kg cada una.", price: 1899, stock: 10, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/e/e3/TwoDumbbells.JPG", category: "deportes" },
-  { name: "Botella termica ORBIT Hydro", description: "Botella de acero inoxidable, mantiene frio/calor hasta 12h, 1L.", price: 329, stock: 50, imageUrl: "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f7/Niksun_stainless_steel_water_bottle.jpg/960px-Niksun_stainless_steel_water_bottle.jpg", category: "deportes" },
-  { name: "Banda de resistencia ORBIT Band Set", description: "Set de 5 bandas de resistencia con diferentes niveles de tension.", price: 279, stock: 40, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/0/02/Trenirovachni_lastici_set.JPG", category: "deportes" },
+  { name: "Mesa de noche ORBIT Rest", description: "Mesa auxiliar de madera con cajon y repisa, acabado cerezo.", price: 2199, stock: 10, imageUrl: "https://cdn.dummyjson.com/product-images/furniture/bedside-table-african-cherry/1.webp", category: "hogar" },
+  { name: "Organizador modular ORBIT Space", description: "Organizador colgante de metal para tazas o accesorios de cocina.", price: 389, stock: 28, imageUrl: "https://cdn.dummyjson.com/product-images/kitchen-accessories/mug-tree-stand/1.webp", category: "hogar" },
+  { name: "Planta decorativa ORBIT Green", description: "Planta artificial en maceta, decoracion de interiores sin mantenimiento.", price: 499, stock: 20, imageUrl: "https://cdn.dummyjson.com/product-images/home-decoration/plant-pot/1.webp", category: "hogar" },
+  { name: "Raqueta de tenis ORBIT Ace", description: "Raqueta de tenis ligera, marco de grafito, para jugadores intermedios.", price: 1299, stock: 15, imageUrl: "https://cdn.dummyjson.com/product-images/sports-accessories/tennis-racket/1.webp", category: "deportes" },
+  { name: "Balon de basquetbol ORBIT Court", description: "Balon de basquetbol oficial, superficie de agarre para interior y exterior.", price: 599, stock: 35, imageUrl: "https://cdn.dummyjson.com/product-images/sports-accessories/basketball/1.webp", category: "deportes" },
+  { name: "Balon de futbol ORBIT Kick", description: "Balon de futbol talla 5, costura resistente, para cancha y pasto sintetico.", price: 549, stock: 40, imageUrl: "https://cdn.dummyjson.com/product-images/sports-accessories/football/1.webp", category: "deportes" },
+  { name: "Guante de beisbol ORBIT Catch", description: "Guante de beisbol de piel, ajuste comodo, para practica y juego.", price: 899, stock: 18, imageUrl: "https://cdn.dummyjson.com/product-images/sports-accessories/baseball-glove/1.webp", category: "deportes" },
+];
+
+// Productos con nombres antiguos que ya no existen en el catalogo (se
+// renombraron/reemplazaron al cambiar todas las fotos a la misma fuente).
+// Se eliminan del todo en vez de dejarlos huerfanos en la base.
+const RETIRED_PRODUCT_NAMES = [
+  "Teclado mecanico ORBIT Type",
+  "Mouse ergonomico ORBIT Grip",
+  "Chamarra impermeable ORBIT Storm",
+  "Sudadera ORBIT Comfort",
+  "Gorra ORBIT Street",
+  "Set de sabanas ORBIT Sleep",
+  "Difusor aromatico ORBIT Calm",
+  "Tapete de yoga ORBIT Flex",
+  "Mancuernas ajustables ORBIT Power",
+  "Botella termica ORBIT Hydro",
+  "Banda de resistencia ORBIT Band Set",
 ];
 
 async function main() {
@@ -71,6 +91,11 @@ async function main() {
     });
   }
   console.log(`- ${PRODUCTS.length} productos listos`);
+
+  const retired = await prisma.product.deleteMany({ where: { name: { in: RETIRED_PRODUCT_NAMES } } });
+  if (retired.count > 0) {
+    console.log(`- ${retired.count} producto(s) con nombre antiguo eliminados`);
+  }
 
   const adminEmail = process.env.SEED_ADMIN_EMAIL ?? "admin@orbit.com";
   const adminPassword = process.env.SEED_ADMIN_PASSWORD ?? "Admin123!";

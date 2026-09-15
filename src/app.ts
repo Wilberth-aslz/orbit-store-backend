@@ -7,6 +7,7 @@ import { env } from "./config/env";
 import { errorHandler, notFoundHandler } from "./middlewares/error.middleware";
 import authRoutes from "./routes/auth.routes";
 import categoryRoutes from "./routes/category.routes";
+import dashboardRoutes from "./routes/dashboard.routes";
 import favoriteRoutes from "./routes/favorite.routes";
 import productRoutes from "./routes/product.routes";
 import userRoutes from "./routes/user.routes";
@@ -39,6 +40,7 @@ app.use("/api/categories", categoryRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/favorites", favoriteRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/dashboard", dashboardRoutes);
 
 // --- Manejo de errores (siempre al final) ---
 app.use(notFoundHandler);

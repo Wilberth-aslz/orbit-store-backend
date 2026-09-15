@@ -8,16 +8,22 @@ periodo de prueba de Desarrollo de Software (Turing Inteligencia Artificial).
 - **Runtime:** Node.js 22 + TypeScript
 - **Framework:** Express 5
 - **ORM:** Prisma 6
-- **Base de datos:** SQLite por defecto (archivo local, cero configuracion). Compatible con
-  PostgreSQL/MySQL cambiando solo `provider` + `DATABASE_URL` (ver `prisma/schema.prisma`).
+- **Base de datos:** PostgreSQL, provisionado con [Neon](https://neon.tech) (integracion de
+  Vercel Marketplace). Produccion y desarrollo usan **bases separadas** (mismo motor,
+  distinto `DATABASE_URL`) -- nunca se desarrolla/prueba contra los datos reales.
+- **Despliegue:** Vercel (funcion serverless, ver `api/index.ts` y `vercel.json`)
 - **Auth:** JWT (jsonwebtoken) + bcryptjs para hash de contrasenas
 - **Validacion:** Zod
 - **Seguridad:** helmet, cors, express-rate-limit
+- **Pruebas:** Vitest (unitarias) + Postman/Newman (integracion, ver `postman/`)
 
 ## Requisitos
 
 - Node.js 20+ (probado con Node 22)
 - npm
+- Una base de datos PostgreSQL para desarrollo. Lo mas rapido es crear un proyecto
+  gratis en [neon.tech](https://neon.tech) (2 minutos, sin tarjeta) -- **no uses la
+  base de produccion para desarrollar**, crea la tuya propia.
 
 ## Instalacion y ejecucion local
 
@@ -25,10 +31,11 @@ periodo de prueba de Desarrollo de Software (Turing Inteligencia Artificial).
 cd backend
 npm install
 
-# Variables de entorno (ya trae valores por defecto que funcionan tal cual)
+# Variables de entorno -- pon tu propio DATABASE_URL/DATABASE_URL_UNPOOLED
+# de PostgreSQL (Neon u otro), nunca el de produccion
 cp .env.example .env
 
-# Crea la base de datos SQLite y aplica el esquema
+# Aplica el esquema a tu base
 npm run prisma:migrate
 
 # Llena la base de datos con categorias, productos y usuarios de prueba
@@ -152,14 +159,21 @@ Base URL: `http://localhost:4000/api`
 | ------ | ---------- | ---------- | -------------------------------- |
 | GET    | `/users`   | Si (ADMIN) | Lista de usuarios registrados    |
 
+### Dashboard (panel de control)
+
+| Metodo | Ruta         | Auth       | Descripcion                                                        |
+| ------ | ------------- | ---------- | --------------------------------------------------------------------- |
+| GET    | `/dashboard`  | Si (ADMIN) | Totales (productos/categorias/usuarios/valor de inventario), valor de inventario por categoria y alertas de stock bajo (`stock <= 5`) |
+
 Todas las respuestas siguen el formato `{ success: boolean, data?, message?, meta? }`.
 
 ## Decisiones tecnicas
 
-- **SQLite por defecto:** se eligio para que el proyecto corra "out of the box" sin
-  instalar un motor de base de datos aparte. El esquema es 100% compatible con
-  PostgreSQL/MySQL; para migrar solo hay que cambiar el `provider` en
-  `prisma/schema.prisma` y el `DATABASE_URL` en `.env`.
+- **PostgreSQL (Neon) en vez de SQLite:** el proyecto empezo con SQLite (cero
+  configuracion), pero se migro a Postgres real porque el despliegue serverless de
+  Vercel no tiene disco persistente para un archivo SQLite. Produccion y desarrollo
+  usan **proyectos/bases separadas** del mismo Neon (nunca se desarrolla contra datos
+  reales) -- ver `.env.example`.
 - **JWT + roles:** el login devuelve un JWT con `sub`, `email` y `role`. Los
   middlewares `requireAuth` y `requireRole("ADMIN")` protegen las rutas de escritura.
 - **Zod + middleware `validate`:** cada ruta valida su `body`/`query`/`params` antes de
@@ -168,3 +182,7 @@ Todas las respuestas siguen el formato `{ success: boolean, data?, message?, met
 - **Manejo de errores centralizado:** `ApiError` + middleware `errorHandler` traducen
   errores conocidos de Prisma (violacion de unicidad, registro no encontrado) a
   respuestas HTTP consistentes.
+- **Panel de control con datos reales, no solo CRUD:** `/dashboard` agrega metricas
+  de negocio (valor de inventario, alertas de stock) pensando en que Turing-IA
+  trabaja con analitica (Tableau, People Analytics) -- el admin no solo edita filas,
+  tiene una vista ejecutiva del catalogo.

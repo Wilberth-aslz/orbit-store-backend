@@ -19,10 +19,22 @@ npx newman run postman/ORBIT-Store.postman_collection.json
   busqueda, paginacion), y casos negativos (sin token -> 401, datos invalidos -> 400,
   rol incorrecto -> 403).
 - **Favoritos**: agregar/listar/quitar favoritos del usuario autenticado.
-- **Usuarios**: listado solo-ADMIN.
+- **Usuarios**: listado solo-ADMIN, ascender/degradar rol de otro usuario (con
+  proteccion contra auto-cambio y contra quedarse sin administradores).
+- **Dashboard**: resumen ejecutivo del panel de control, solo-ADMIN.
 
 El flujo esta pensado para correrse de arriba a abajo (carpeta por carpeta): los
 requests de login guardan el JWT en variables de coleccion que reutilizan los
 requests protegidos de las carpetas siguientes.
 
-Ultima corrida verificada: **26 requests, 0 fallidos, 10/10 aserciones OK**.
+Ultima corrida verificada contra produccion: **32 requests, 0 fallidos, 17/17
+aserciones OK**. Reporte visual completo (generado con
+[newman-reporter-htmlextra](https://www.npmjs.com/package/newman-reporter-htmlextra)):
+`postman/test-report.html` — abrelo directo en el navegador, o regeneralo con:
+
+```bash
+npx newman run postman/ORBIT-Store.postman_collection.json --reporters cli,htmlextra --reporter-htmlextra-export postman/test-report.html
+```
+
+Resumen navegable de todos los resultados (unit tests + integracion + build):
+**https://claude.ai/artifact/XDTrAy4uGu5MmPdhAz3hpL**

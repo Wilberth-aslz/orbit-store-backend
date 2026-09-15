@@ -1,7 +1,7 @@
 {
   "info": {
     "name": "ORBIT Store API",
-    "description": "Coleccion de Postman para el reto de periodo de prueba - Desarrollo de Software (Turing Inteligencia Artificial). Cubre auth, categorias, productos, favoritos y usuarios.\n\nFlujo sugerido:\n1. Auth > Login (Admin) -- guarda el token automaticamente en {{adminToken}}\n2. Auth > Login (User) -- guarda el token automaticamente en {{userToken}}\n3. Corre el resto de las carpetas en orden.",
+    "description": "Coleccion de Postman para el reto de periodo de prueba - Desarrollo de Software (Turing Inteligencia Artificial). Cubre auth, categorias, productos, favoritos y usuarios.\n\nFlujo sugerido:\n1. Auth > Login (Admin) -- guarda el token automaticamente en {{adminToken}}\n2. Auth > Login (User) -- guarda el token automaticamente en {{userToken}}\n3. Corre el resto de las carpetas en orden.\n\nNOTA: las credenciales admin@orbit.com/Admin123! que usa el request 'Login (Admin)' solo funcionan contra una base local sembrada con `npm run seed` (o cualquier otra donde tu mismo hayas corrido el seed). La base de produccion desplegada tiene una contrasena de admin distinta y privada, rotada a proposito para que este archivo publico no de acceso de escritura a la demo en vivo.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "_postman_id": "orbit-store-api-collection"
   },

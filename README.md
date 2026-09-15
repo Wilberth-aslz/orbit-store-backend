@@ -58,6 +58,19 @@ El servidor queda escuchando en `http://localhost:4000`. Healthcheck: `GET /api/
 | ADMIN | admin@orbit.com     | Admin123!   |
 | USER  | user@orbit.com      | User123!    |
 
+Estas son las credenciales que crea el seed **en tu base de datos local** (las que
+tu propio `npm run seed` genera al correr este repo). Son publicas a proposito,
+para que cualquiera que clone el proyecto pueda probarlo de inmediato.
+
+> **Nota de seguridad:** la contrasena del usuario ADMIN en el despliegue de
+> produccion (Neon) fue rotada a un valor distinto y **no esta publicada en este
+> repositorio** -- publicar aqui la contrasena real de un admin le daria a
+> cualquiera con acceso al repo publico control de escritura sobre la base de
+> datos en vivo. Si necesitas entrar como admin a la demo desplegada, pide la
+> contrasena por un canal privado. El usuario USER si comparte la misma
+> contrasena en local y produccion, porque su rol no tiene permisos
+> destructivos (solo puede gestionar sus propios favoritos).
+
 ## Modelo de datos (ERD)
 
 ```
